@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import FoodBox from '../FoodBox/FoodBox';
 import foods from '../../foods.json';
 import AddFood from '../AddFood/AddFood';
+import Search from '../Search/Search';
 
 export default class Main extends Component {
   state = {
@@ -9,9 +10,11 @@ export default class Main extends Component {
     formDisplayed: false,
   };
 
-  createNewFoodEntry = (newFoodObject) => {
+  createNewFoodEntry = (newFoodObject, e) => {
+    e.preventDefault();
     const copy = [...this.state.allFoods];
     copy.unshift(newFoodObject);
+    console.log(copy);
     this.setState({ allFoods: copy, formDisplayed: false });
   };
 
@@ -22,11 +25,14 @@ export default class Main extends Component {
   render() {
     return (
       <div>
-        IronNutrition
+        <Search executeSearch={this.filterResults} />
+
         <button onClick={this.toggleForm}>Add Food</button>
         <div>
-          <AddFood />
-          {foods.map((eachFood) => {
+          {this.state.formDisplayed && (
+            <AddFood create={this.createNewFoodEntry} />
+          )}
+          {this.state.allFoods.map((eachFood) => {
             return (
               <FoodBox
                 name={eachFood.name}
